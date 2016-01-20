@@ -45,7 +45,8 @@ module.exports = function(robot) {
             });
             var status  = attendeeRepository.status();
             var message = Object.keys(status).map(function(key) {
-                return idToEvent[key].title + ": " + status[key].map(function(u) { return u.name;}).join(",");
+                var e = idToEvent[key];
+                return e.title + "( " + e.start + " )" + ": " + status[key].map(function(u) {return u.name;}).join(",");
             }).join("\n");
             message = message || "there are no attendees for any events";
             msg.send(message);
