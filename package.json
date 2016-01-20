@@ -10,5 +10,8 @@
     "hubot"
   ],
   "author": "Arata Tanaka",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "googleapis": "^2.1.7"
+  }
 }
