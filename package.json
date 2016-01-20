@@ -1,0 +1,14 @@
+{
+  "name": "hubot-attend-management",
+  "version": "0.0.1",
+  "description": "manage attendees.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "hubot"
+  ],
+  "author": "Arata Tanaka",
+  "license": "MIT"
+}
