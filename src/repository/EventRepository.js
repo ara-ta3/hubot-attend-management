@@ -14,6 +14,7 @@ var EventRepositoryOnGoogleCalendar = function(authedClient, calendar, calendarI
             }
             var events = resp.items.map(function(i) {
                 return {
+                    id: i.id,
                     title: i.summary,
                     description: i.description,
                     location: i.location,
