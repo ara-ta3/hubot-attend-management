@@ -1,10 +1,10 @@
 {
   "name": "hubot-attend-management",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "manage attendees.",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "./node_modules/.bin/mocha test"
   },
   "keywords": [
     "hubot"
@@ -13,5 +13,9 @@
   "license": "MIT",
   "dependencies": {
     "googleapis": "^2.1.7"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "power-assert": "^1.2.0"
   }
 }
