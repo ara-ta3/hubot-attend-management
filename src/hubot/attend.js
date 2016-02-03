@@ -33,28 +33,39 @@ module.exports = function(robot) {
     var manager             = new Manager(eventRepository, attendeeRepository);
 
     robot.respond(/attend status/i, function(msg) {
-        manager.confirmStatus(msg.send, function(err) {
+        manager.confirmStatus(function(m) {
+            msg.send(m);
+        }, function(err) {
             robot.logger.error("hubot-attend-management: " +err);
             msg.send(err);
         });
     });
 
     robot.respond(/attend attend latest/i, function(msg) {
-        manager.addAttendee(0, msg.message.user, msg.send);
+        manager.addAttendee(0, msg.message.user, function(m) {
+            msg.send(m);
+        });
     });
 
     robot.respond(/attend cancel latest/i, function(msg) {
-        manager.addAttendee(0, msg.message.user, msg.send);
+        manager.addAttendee(0, msg.message.user, function(m) {
+            msg.send(m)
+        });
     });
 
     robot.respond(/attend attend (\d+)/i, function(msg) {
         var eventIdx = msg.match[1];
-        manager.addAttendee(eventIdx, msg.message.user, msg.send);
+        manager.addAttendee(eventIdx, msg.message.user, function(m) {
+            msg.send(m)
+        });
     });
 
     robot.respond(/attend cancel (\d+)/i, function(msg) {
         var eventIdx = msg.match[1];
-        manager.removeAttendee(eventIdx, msg.message.user, msg.send);
+        manager.removeAttendee(eventIdx, msg.message.user, function(m) {
+            msg.send(m)
+        });
+
     });
 
     robot.respond(/attend event list/i, function(msg) {
