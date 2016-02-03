@@ -69,7 +69,9 @@ module.exports = function(robot) {
     });
 
     robot.respond(/attend event list/i, function(msg) {
-        manager.showEvents(msg,send, function(err) {
+        manager.showEvents(function(m) {
+            msg.send(m);
+        }, function(err) {
             robot.logger.error("hubot-attend-management: " +err);
             msg.send(err);
         });

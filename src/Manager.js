@@ -26,10 +26,10 @@ var Manager = function(eventRepository, attendeeRepository) {
                 var e = events[key];
                 return e.title + "( " + e.start + " )" + ": " + status[key].map(function(u) {return u.name;}).join(",");
             }).join("\n");
-            return callback(message || "there are no attendees for any events");
+            return callback.call(null, message || "there are no attendees for any events");
         }, function(err) {
             console.error(err);
-            errorCallback && errorCallback(err);
+            errorCallback && errorCallback.call(null, err);
         });
     };
 
@@ -37,10 +37,10 @@ var Manager = function(eventRepository, attendeeRepository) {
         eventRepository.getEvents(function(es) {
             var event = es[idx];
             if (!event) {
-                return callback("event for " + idx + " was not found.");
+                return callback.call(null,"event for " + idx + " was not found.");
             }
             attendeeRepository.put(event.id, user);
-            callback(user.name + " attends to " + event.title);
+            callback.call(null, user.name + " attends to " + event.title);
         });
     };
 
@@ -48,16 +48,16 @@ var Manager = function(eventRepository, attendeeRepository) {
         eventRepository.getEvents(function(es) {
             var event = es[idx];
             if (!event) {
-                return callback("event for " + idx + " was not found.");
+                return callback.call(null,"event for " + idx + " was not found.");
             }
             attendeeRepository.remove(event.id, user);
-            callback(user.name + "'s attendance to " + event.title + "is canceled");
+            callback.call(null, user.name + "'s attendance to " + event.title + "is canceled");
         });
     };
 
     this.showEvents = function(callback, errorCallback) {
         eventRepository.getEvents(function(es) {
-            return callback(es.map(eventToString).join("\n\n"));
+            return callback.call(null, es.map(eventToString).join("\n\n"));
         }, errorCallback);
     };
 };
