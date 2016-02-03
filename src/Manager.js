@@ -20,10 +20,10 @@ var Manager = function(eventRepository, attendeeRepository) {
 
     this.confirmStatus = function(callback, errorCallback) {
         eventRepository.getEvents(function(es) {
-            var idToEvent = idToEvent(es);
+            var events  = idToEvent(es);
             var status  = attendeeRepository.status();
             var message = Object.keys(status).map(function(key) {
-                var e = idToEvent[key];
+                var e = events[key];
                 return e.title + "( " + e.start + " )" + ": " + status[key].map(function(u) {return u.name;}).join(",");
             }).join("\n");
             return callback(message || "there are no attendees for any events");
