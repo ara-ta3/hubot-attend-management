@@ -52,7 +52,7 @@ module.exports = function(robot) {
     });
 
     robot.respond(/attend cancel latest/i, function(msg) {
-        manager.addAttendee(0, toAttendee(msg.message.user), function(m) {
+        manager.removeAttendee(0, toAttendee(msg.message.user), function(m) {
             msg.send(m)
         });
     });
