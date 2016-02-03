@@ -1,3 +1,5 @@
+var Attendee = require(__dirname + '/../model/Attendee.js');
+
 var AttendeeRepositoyOnHubot = function(brain) {
     var ROBOT_STORAGE_KEY = "hubot-attend-management-aHVib3QtYXR0ZW5kLW1hbmFnZW1lbnQ=";
     var allAttendees = (brain && brain.get(ROBOT_STORAGE_KEY)) || {};
@@ -13,8 +15,13 @@ var AttendeeRepositoyOnHubot = function(brain) {
     this.put = function(eventId, user) {
         var attendees = allAttendees[eventId] || [];
         attendees.push(user);
-        allAttendees[eventId] = attendees.filter(function (x, i, self) {
+        var names = attendees.map(function(a) {
+            return a.name;
+        });
+        allAttendees[eventId] = names.filter(function (x, i, self) {
             return self.indexOf(x) === i;
+        }).map(function(n) {
+            return new Attendee(n);
         });
         commit();
         return allAttendees;
@@ -23,7 +30,7 @@ var AttendeeRepositoyOnHubot = function(brain) {
     this.remove = function(eventId, user) {
         var attendees = allAttendees[eventId] || [];
         allAttendees[eventId] = attendees.filter(function (x, i, self) {
-            return x !== user;
+            return x.name !== user.name;
         });
         commit();
         return allAttendees;

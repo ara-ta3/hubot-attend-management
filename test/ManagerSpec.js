@@ -8,9 +8,7 @@ var MockEventRepository = function(data) {
         callback(data);
     };
 };
-var MockUser = function(name) {
-    this.name = name;
-};
+var Attendee = require('../src/model/Attendee.js');
 
 
 describe('Manager', function() {
@@ -21,10 +19,10 @@ describe('Manager', function() {
             ]);
             var attendeeRepository  = new AttendeeRepository();
             var manager = new Manager(eventRepository, attendeeRepository);
-            var user    = new MockUser("piyo");
+            var user    = new Attendee("piyo");
             manager.addAttendee(0, user, function(msg) {
                 var actual = attendeeRepository.status();
-                assert.equal(user, actual["id"][0]);
+                assert.equal(user.name, actual["id"][0].name);
             });
         });
 
@@ -34,13 +32,13 @@ describe('Manager', function() {
             ]);
             var attendeeRepository  = new AttendeeRepository();
             var manager = new Manager(eventRepository, attendeeRepository);
-            var user1   = new MockUser("piyo1");
-            var user2   = new MockUser("piyo2");
+            var user1   = new Attendee("piyo1");
+            var user2   = new Attendee("piyo2");
             manager.addAttendee(0, user1, function(msg) {
                 manager.addAttendee(0, user2, function(msg) {
                     var actual = attendeeRepository.status();
-                    assert.notEqual(-1, actual["id"].indexOf(user1));
-                    assert.notEqual(-1, actual["id"].indexOf(user2));
+                    assert.equal(user1.name, actual["id"][0].name);
+                    assert.equal(user2.name, actual["id"][1].name);
                 });
             });
         });
@@ -52,10 +50,10 @@ describe('Manager', function() {
             ]);
             var attendeeRepository  = new AttendeeRepository();
             var manager = new Manager(eventRepository, attendeeRepository);
-            var user    = new MockUser("piyo");
+            var user    = new Attendee("piyo");
             manager.addAttendee(0, user, function(msg) {
                 var actual = attendeeRepository.status();
-                assert.equal(user, actual["id1"][0]);
+                assert.equal(user.name, actual["id1"][0].name);
                 assert.equal(false, "id2" in actual);
             });
         });
@@ -67,14 +65,29 @@ describe('Manager', function() {
             ]);
             var attendeeRepository  = new AttendeeRepository();
             var manager = new Manager(eventRepository, attendeeRepository);
-            var user    = new MockUser("piyo");
+            var user    = new Attendee("piyo");
             manager.addAttendee(1, user, function(msg) {
                 var actual = attendeeRepository.status();
-                assert.equal(user, actual["id2"][0]);
+                assert.equal(user.name, actual["id2"][0].name);
                 assert.equal(false, "id1" in actual);
             });
         });
 
+        it('should add one attendee when attendee added some times', function () {
+            var eventRepository     = new MockEventRepository([
+                new Event("id", "hoge", "desc", "tokyo", new Date(), "")
+            ]);
+            var attendeeRepository  = new AttendeeRepository();
+            var manager = new Manager(eventRepository, attendeeRepository);
+            manager.addAttendee(0, new Attendee("piyo"), function(msg) {
+                manager.addAttendee(0, new Attendee("piyo"), function(msg) {
+                    var actual = attendeeRepository.status();
+                    assert.equal(1, actual["id"].length);
+                });
+            });
+        });
+
+ 
     });
 
     describe('#cancelAttendee()', function() {
@@ -84,7 +97,7 @@ describe('Manager', function() {
             ]);
             var attendeeRepository  = new AttendeeRepository();
             var manager = new Manager(eventRepository, attendeeRepository);
-            var user    = new MockUser("piyo");
+            var user    = new Attendee("piyo");
             manager.addAttendee(0, user, function(msg) {
                 manager.removeAttendee(0, user, function(msg) {
                     var actual = attendeeRepository.status();
@@ -99,14 +112,14 @@ describe('Manager', function() {
             ]);
             var attendeeRepository  = new AttendeeRepository();
             var manager = new Manager(eventRepository, attendeeRepository);
-            var user1   = new MockUser("piyo1");
-            var user2   = new MockUser("piyo2");
+            var user1   = new Attendee("piyo1");
+            var user2   = new Attendee("piyo2");
             manager.addAttendee(0, user1, function(msg) {
                 manager.addAttendee(0, user2, function(msg) {
                     manager.removeAttendee(0, user1, function(msg) {
                         var actual = attendeeRepository.status();
-                        assert.equal(-1, actual["id"].indexOf(user1));
-                        assert.notEqual(-1, actual["id"].indexOf(user2));
+                        assert.equal(user2.name, actual["id"][0].name);
+                        assert.equal(1, actual['id'].length);
                     });
                 });
             });

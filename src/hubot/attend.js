@@ -19,6 +19,7 @@ var jwtClient = new google.auth.JWT(key.client_email,null,key.private_key, scope
 var EventRepository     = require(__dirname + '/../repository/EventRepository.js');
 var AttendeeRepository  = require(__dirname + '/../repository/AttendeeRepository.js');
 var Manager   = require(__dirname + '/../Manager.js');
+var Attendee  = require(__dirname + '/../model/Attendee.js');
 
 
 module.exports = function(robot) {
@@ -31,6 +32,9 @@ module.exports = function(robot) {
     var eventRepository     = new EventRepository(jwtClient, google.calendar('v3'), calendarId);
     var attendeeRepository  = new AttendeeRepository(robot.brain);
     var manager             = new Manager(eventRepository, attendeeRepository);
+    var toAttendee          = function(u) {
+        return new Attendee(u.name);
+    };
 
     robot.respond(/attend status/i, function(msg) {
         manager.confirmStatus(function(m) {
@@ -42,27 +46,27 @@ module.exports = function(robot) {
     });
 
     robot.respond(/attend attend latest/i, function(msg) {
-        manager.addAttendee(0, msg.message.user, function(m) {
+        manager.addAttendee(0, toAttendee(msg.message.user), function(m) {
             msg.send(m);
         });
     });
 
     robot.respond(/attend cancel latest/i, function(msg) {
-        manager.addAttendee(0, msg.message.user, function(m) {
+        manager.addAttendee(0, toAttendee(msg.message.user), function(m) {
             msg.send(m)
         });
     });
 
     robot.respond(/attend attend (\d+)/i, function(msg) {
         var eventIdx = msg.match[1];
-        manager.addAttendee(eventIdx, msg.message.user, function(m) {
+        manager.addAttendee(eventIdx, toAttendee(msg.message.user), function(m) {
             msg.send(m)
         });
     });
 
     robot.respond(/attend cancel (\d+)/i, function(msg) {
         var eventIdx = msg.match[1];
-        manager.removeAttendee(eventIdx, msg.message.user, function(m) {
+        manager.removeAttendee(eventIdx, toAttendee(msg.message.user), function(m) {
             msg.send(m)
         });
 
