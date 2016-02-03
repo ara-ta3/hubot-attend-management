@@ -18,7 +18,7 @@ var scope     = ['https://www.googleapis.com/auth/calendar.readonly'];
 var jwtClient = new google.auth.JWT(key.client_email,null,key.private_key, scope, null);
 var EventRepository     = require(__dirname + '/../repository/EventRepository.js');
 var AttendeeRepository  = require(__dirname + '/../repository/AttendeeRepository.js');
-var Manager   = require(__dirname + '/Manager.js');
+var Manager   = require(__dirname + '/../Manager.js');
 
 
 module.exports = function(robot) {
