@@ -1,6 +1,6 @@
 {
   "name": "hubot-attend-management",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "manage attendees.",
   "main": "index.js",
   "scripts": {
