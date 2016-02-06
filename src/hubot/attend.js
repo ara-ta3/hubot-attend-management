@@ -13,9 +13,7 @@
 var keyFilePath = process.env.HUBOT_ATTEND_MANAGER_CREDENTIAL;
 var calendarId  = process.env.HUBOT_ATTEND_MANAGER_CALENDARID;
 var google    = require("googleapis");
-var key       = require(keyFilePath);
 var scope     = ['https://www.googleapis.com/auth/calendar.readonly'];
-var jwtClient = new google.auth.JWT(key.client_email,null,key.private_key, scope, null);
 var EventRepository     = require(__dirname + '/../repository/EventRepository.js');
 var AttendeeRepository  = require(__dirname + '/../repository/AttendeeRepository.js');
 var Manager   = require(__dirname + '/../Manager.js');
@@ -23,12 +21,22 @@ var Attendee  = require(__dirname + '/../model/Attendee.js');
 
 
 module.exports = function(robot) {
-    jwtClient.authorize(function(err, tokens) {
-        return err ? 
-            robot.logger.error("hubot-attend-management: " + err):
-            robot.logger.info("hubot-attend-management: google authentication for calendar was successed");
-    });
-
+    var auth = function(keyFilePath) {
+        try {
+            var key       = require(keyFilePath);
+            var jwtClient = new google.auth.JWT(key.client_email,null,key.private_key, scope, null);
+            jwtClient.authorize(function(err, tokens) {
+                return err ? 
+                robot.logger.error("hubot-attend-management: " + err):
+                robot.logger.info("hubot-attend-management: google authentication for calendar was successed");
+            });
+            return jwtClient;
+        } catch (e) {
+            robot.logger.error("hubot-attend-management: " + e);
+            return e;
+        }
+    };
+    var jwtClient           = auth(keyFilePath);
     var eventRepository     = new EventRepository(jwtClient, google.calendar('v3'), calendarId);
     var attendeeRepository  = new AttendeeRepository(robot.brain);
     var manager             = new Manager(eventRepository, attendeeRepository);
